@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>Untitled Document</title>
+		<script data-main="main" src="//requirejs.org/docs/release/2.1.5/minified/require.js"></script>
+		<script>
+			function renderBarcode(barcode,barcodeType,location){
+				var validBarcode = false;
+				var rotation = ['N','L','R','I'];
+				var barcodeConfig = [
+					{type:'code128', name:'Code 128', opts:'includetext parsefnc', scale:1, rotate:0},
+					{type:'hibccode128', name:'HIBC Code 128', opts:'includetext', scale:1, rotate:0},
+					
+					{type:'hibcmicropdf417', name:'HIBC MicroPDF417', opts:'', scale:2, rotate:0},
+					{type:'hibcpdf417', name:'HIBC PDF417', opts:'', scale:1, rotate:0},
+					{type:'micropdf417', name:'MicroPDF417', opts:'', scale:1, rotate:0},
+					{type:'pdf417', name:'PDF417', opts:'', scale:2, rotate:0},
+					
+					{type:'azteccode', name:'Aztec Code', opts:'format=full', scale:2, rotate:0},
+					
+					{type:'hibcqrcode', name:'HIBC QR Code', opts:'', scale:2, rotate:0},
+					{type:'qrcode', name:'QR Code', opts:'eclevel=M', scale:2, rotate:0}
+				];
+				if(typeof barcodeType == 'string'){
+					for(var i in barcodeConfig){
+						if(barcodeType == barcodeConfig[i].type){
+							var type = barcodeConfig[i].type;
+							var opts = barcodeConfig[i].opts;
+							var scale = barcodeConfig[i].scale;
+							var rotate = rotation[barcodeConfig[i].rotate];
+							
+							var text = barcode.replace(/^\s+/,'').replace(/\s+$/,''); // Barcode Value
+							var altx = barcode.replace(/^\s+/,'').replace(/\s+$/,''); // Barcode Text
+							
+							validBarcode = true;
+							break;
+						}
+					}
+				}
+				if(validBarcode){
+					var bw = new Baren;
+					// Convert the options to a dictionary object, so we can pass alttext with
+					// spaces.
+					var tmp = opts.split(' '); 
+					opts = {};
+					for(var i = 0; i < tmp.length; i++){
+						if(!tmp[i]){
+							continue;
+						}
+						var eq = tmp[i].indexOf('=');
+						if(eq == -1){
+							opts[tmp[i]] = bw.value(true);
+						}
+						else{
+							opts[tmp[i].substr(0, eq)] = bw.value(tmp[i].substr(eq+1));
+						}
+					}
+					// Add the alternate text
+					if(altx){
+						opts.alttext = bw.value(altx);
+					}
+					// Add any hard-coded options required to fix problems in the javascript
+					// emulation. 
+					opts.inkspread = bw.value(0);
+					if(Baren.needyoffset[type] && !opts.textxalign && !opts.textyalign && !opts.alttext && opts.textyoffset === undefined){
+						opts.textyoffset = bw.value(-10);
+					}
+					bw.bitmap(new Baren.Bitmap);
+					var scl = parseInt(scale, 10) || 1;
+					bw.scale(scl,scl);
+					bw.push(text);
+					bw.push(opts);
+					try{
+						bw.call(type);
+						bw.bitmap().show(location,rotate);
+						bw = null;
+					}
+					catch(e){
+						console.log(e);
+					}
+				}
+				else{
+					// TODO: Handle Invalid Barcode Info
+				}
+			}
+		</script>
+	</head>
+	<body>
+		<canvas id="canvas1" style="border: 1px solid rgb(255, 255, 255); visibility:hidden;"></canvas>
+		<canvas id="canvas2" style="border: 1px solid rgb(255, 255, 255); visibility:hidden;"></canvas>
+		<canvas id="canvas3" style="border: 1px solid rgb(255, 255, 255); visibility:hidden;"></canvas>
+		<canvas id="canvas4" style="border: 1px solid rgb(255, 255, 255); visibility:hidden;"></canvas>
+		<canvas id="canvas5" style="border: 1px solid rgb(255, 255, 255); visibility:hidden;"></canvas>
+		<canvas id="canvas6" style="border: 1px solid rgb(255, 255, 255); visibility:hidden;"></canvas>
+		<canvas id="canvas7" style="border: 1px solid rgb(255, 255, 255); visibility:hidden;"></canvas>
+		<canvas id="canvas8" style="border: 1px solid rgb(255, 255, 255); visibility:hidden;"></canvas>
+		<canvas id="canvas9" style="border: 1px solid rgb(255, 255, 255); visibility:hidden;"></canvas>
+		<script>
+			window.onload = function(){
+				require(['code128', 'hibccode128', 'hibcmicropdf417', 'hibcpdf417', 'micropdf417', 'pdf417', 'azteccode', 'hibcqrcode', 'qrcode'],
+				function(code128,hibccode128,hibcmicropdf417,hibcpdf417,micropdf417,pdf417,azteccode,hibcqrcode,qrcode) {
+					tickets = [
+						{barcode:'2561275740311554',barcodeType:'code128',location:'canvas1'},
+						{barcode:'2561275740311554',barcodeType:'hibccode128',location:'canvas2'},
+						{barcode:'2561275740311554',barcodeType:'hibcmicropdf417',location:'canvas3'},
+						{barcode:'2561275740311554',barcodeType:'hibcpdf417',location:'canvas4'},
+						{barcode:'2561275740311554',barcodeType:'micropdf417',location:'canvas5'},
+						{barcode:'2561275740311554',barcodeType:'pdf417',location:'canvas6'},
+						{barcode:'2561275740311554',barcodeType:'azteccode',location:'canvas7'},
+						{barcode:'2561275740311554',barcodeType:'hibcqrcode',location:'canvas8'},
+						{barcode:'2561275740311554',barcodeType:'qrcode',location:'canvas9'}
+					];
+					for(var i in tickets){
+						renderBarcode(tickets[i].barcode,tickets[i].barcodeType,tickets[i].location);
+					}
+				});
+			}
+		</script>
+	</body>
+</html>
