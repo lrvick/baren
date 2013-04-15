@@ -9,7 +9,7 @@
  * production use
  */
 requirejs.config(
-	{ baseUrl: 'BarenJS'
+	{ baseUrl: ''
 	, paths:
 		{ 
 		'baren': 'Baren'
