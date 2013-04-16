@@ -535,7 +535,7 @@ Baren.debug = function(s) {
 	if (div)
 		div.innerHTML += s + '\r\n';
 	*/
-	console.log('DEBUG: "'+s+'"');
+	//console.log('DEBUG: "'+s+'"');
 };
 
 Baren.psarray = function(v) {
