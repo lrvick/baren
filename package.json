@@ -1,0 +1,22 @@
+{
+  "name": "baren",
+  "version": "1.0.0",
+  "description": "barcode genrator in javascript forked from bwip-js",
+  "main": "main.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/accesso/baren.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/accesso/baren/issues"
+  },
+  "homepage": "https://github.com/accesso/baren#readme"
+}
